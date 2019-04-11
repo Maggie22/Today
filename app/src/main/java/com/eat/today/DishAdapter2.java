@@ -1,24 +1,20 @@
 package com.eat.today;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.net.URL;
 import java.util.List;
 
 /**
- * Created by cosmos on 2018/10/21.
+ * Created by Li on 2018/10/21.
  */
 
 public class DishAdapter2 extends RecyclerView.Adapter<DishAdapter2.ViewHolder> {
@@ -27,7 +23,6 @@ public class DishAdapter2 extends RecyclerView.Adapter<DishAdapter2.ViewHolder> 
     public static final int COUNT_CHANGED = 1;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        //View dishView;
         mImageView dishImage;
         TextView dishName;
         TextView dishCount;
@@ -39,7 +34,6 @@ public class DishAdapter2 extends RecyclerView.Adapter<DishAdapter2.ViewHolder> 
 
         public ViewHolder(View view) {
             super(view);
-            //dishView=view;
             dishImage = view.findViewById(R.id.dish_img);
             dishName = view.findViewById(R.id.dish_name);
             dishPrice = view.findViewById(R.id.dish_price);
@@ -64,13 +58,18 @@ public class DishAdapter2 extends RecyclerView.Adapter<DishAdapter2.ViewHolder> 
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.for_choices, parent, false);
         final ViewHolder holder = new ViewHolder(view);
+        RecyclerView recyclerView = (RecyclerView) parent;
         holder.countAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 Dish dish = mDishList.get(position);
+
                 dish.addCount();
-                notifyDataSetChanged();
+                TextView txtCount = recyclerView.getLayoutManager().findViewByPosition(position).findViewById(R.id.txt_count);
+
+                txtCount.setText(String.valueOf(Integer.parseInt(txtCount.getText().toString())+1));
+
                 Message message = new Message();
                 message.what = COUNT_CHANGED;
                 handler.sendMessage(message);
@@ -80,18 +79,21 @@ public class DishAdapter2 extends RecyclerView.Adapter<DishAdapter2.ViewHolder> 
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
+
                 Dish dish = mDishList.get(position);
                 int count = dish.getCount();
                 if (count == 0) {
                     Toast.makeText(v.getContext(), "不能再减少了哦", Toast.LENGTH_SHORT).show();
                 } else {
                     dish.delCount();
-                    notifyDataSetChanged();
+                    TextView txtCount = recyclerView.getLayoutManager().findViewByPosition(position).findViewById(R.id.txt_count);
+                    txtCount.setText(String.valueOf(Integer.parseInt(txtCount.getText().toString()) - 1));
                     Message message = new Message();
                     message.what = COUNT_CHANGED;
                     handler.sendMessage(message);
                 }
             }
+
         });
         return holder;
     }
@@ -99,6 +101,20 @@ public class DishAdapter2 extends RecyclerView.Adapter<DishAdapter2.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final Dish dish = mDishList.get(position);
+
+        if(holder.dishImage.getTag()==null)
+        {
+            holder.dishImage.setTag(dish.getImgUrl());
+            holder.dishImage.setImageURL(dish.getImgUrl());
+        }
+        else
+        {
+            if(holder.dishImage.getTag()!=dish.getImgUrl())
+                holder.dishImage.setImageURL(dish.getImgUrl());
+        }
+
+        holder.countAdd.setTag(position);
+        holder.countDel.setTag(position);
         holder.dishImage.setImageURL(dish.getImgUrl());
         holder.dishCount.setText("" + dish.getCount());
         holder.dishPrice.setText("¥" + dish.getPrice());

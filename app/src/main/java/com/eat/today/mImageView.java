@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.InputStream;
@@ -63,7 +62,15 @@ public class mImageView extends android.support.v7.widget.AppCompatImageView {
                     if(code == 200)
                     {
                         InputStream in = connection.getInputStream();
-                        Bitmap bitmap = BitmapFactory.decodeStream(in);
+                        BitmapFactory.Options opts = new BitmapFactory.Options();
+                        opts.inSampleSize=3;
+                        Bitmap bitmap=null;
+                        try {
+                            opts.inJustDecodeBounds=false;
+                            bitmap =BitmapFactory.decodeStream(in,null,opts);
+                        }catch(Exception e) {
+                            Log.e("Failed","加载图片失败了");
+                        }
                         Message msg = new Message();
                         msg.obj = bitmap;
                         msg.what = GET_DATA_SUCCESS;
@@ -80,4 +87,5 @@ public class mImageView extends android.support.v7.widget.AppCompatImageView {
             }
         }.start();
     }
+
 }
