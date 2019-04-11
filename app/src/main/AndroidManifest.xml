@@ -33,7 +33,7 @@
         <activity android:name=".Choices" />
         <activity android:name=".ConfProducts" />
         <activity android:name=".Comment" />
-        <activity android:name=".Tab_AddActivity"/>
+        <activity android:name=".Tab_AddActivity" />
         <activity android:name=".erweima" />
         <activity android:name=".navigate" />
         <activity
@@ -49,6 +49,7 @@
         <activity android:name=".SubmitSuccess" />
         <activity android:name="com.yzq.zxinglibrary.android.CaptureActivity" />
         <activity android:name=".MainActivity" />
+        <activity android:name=".CanteenShowOrders"></activity>
     </application>
 
 </manifest>
